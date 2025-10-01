@@ -1,0 +1,25 @@
+{
+  "name": "aa_veeb",
+  "version": "1.0.0",
+  "description": "Veebiprogrameerimise kursusel loodud veeb, ei oma mõistliku sisu",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://aaisting@github.com/aaisting/AA_veeb.git"
+  },
+  "keywords": [
+    "harjutus"
+  ],
+  "author": "Aksel Aisting",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaisting/AA_veeb/issues"
+  },
+  "homepage": "https://github.com/aaisting/AA_veeb#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
