@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="utf-8">
+  <title>Aksel Aisting, veebiprogrammeerimine</title>
+</head>
+<body>
+  <img src="images/vp_banner_2025_AA.jpg" alt="Kursuse bänner">
+  <h1>Aksel Aisting, veebiprogrammeerimine</h1>
+  <p>See leht on loodud <a href="https://www.tlu.ee">Tallinna Ülikoolis</a> veebiprogrammeerimise kurusel ja ei oma mõistlikku sisu.</p>
+  <hr>
+  <ul>
+    <li><a href="/">Avalehele</a></li>
+  </ul>
+  <h2>Registreeri oma külastus</h2>
+  <form method="POST" action="/regvisit">
+    <label for="firstName">Eesnimi</label>
+    <input id="firstName" type="text" name="firstName" placeholder="Kirjuta siia oma eesnimi...">
+
+    <label for="lastName">Perekonnanimi</label>
+    <input id="lastName" type="text" name="lastName" placeholder="Kirjuta siia oma perekonnanimi...">
+
+    <input type="hidden" name="visitTime" id="visitTime">
+
+    <input type="submit" value="Külastus registreerida">
+  </form>
+
+  <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+      const now = new Date();
+      const formattedTime = now.toISOString().slice(0, 19).replace('T', ' ');
+      document.getElementById('visitTime').value = formattedTime;
+    });
+  </script>
+</body>
+</html>

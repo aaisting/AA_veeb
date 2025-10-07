@@ -7,8 +7,6 @@ const textRef = "public/txt/vanasonad.txt";
 const app = express();
 //määran lehtede renderdaja (view engine)
 app.set("view engine", "ejs");
-// Adjust the path if your views directory is in a different location
-app.set("views", "./views"); 
 //muudame public kataloogi veebiserverile kättesaadavaks
 app.use(express.static("public"));
 //asun päringut parsima. Parameeter lõpus on false, kui ainyult tekst ja true, kui muud infot ka
@@ -33,37 +31,6 @@ app.get("/vanasonad", (req, res)=>{
 		}
 	});
 });
-
-
-/* app.get("/vanasonad", (req, res) => {
-  fs.readFile(textRef, "utf8", (err, data) => {
-    if (err) {
-      res.render("genericlist", {
-        h2: "Vanasõnad",
-        listData: ["Vabandame, ühtki vanasõna ei leitud!"]
-      });
-    } else {
-      // Split the data by semicolons and clean up
-      const items = data
-        .split(";")
-        .map(item => item.trim())
-        .filter(item => item); // Remove empty strings
-
-      // Shuffle the array using the Fisher-Yates algorithm
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-
-      // Render the shuffled list
-      res.render("genericlist", {
-        h2: "Vanasõnad",
-        listData: items
-      });
-    }
-  });
-});
- */
 
 app.get("/regvisit", (req, res)=>{
 	res.render("regvisit");

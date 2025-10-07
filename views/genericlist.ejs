@@ -12,11 +12,9 @@
   <ul>
 	<li><a href="/">Avalehele</a></li>
   </ul>
-  <h2>registreeri oma külastus</h2>
-  <from method="POST">
-	<label for="nameInput">Külastaja nimi</label>
-	<input id="nameInput" type="text" name="nameInput" placeholder="Kirjuta siia oma nimi..">
-	<input id="nameSubmit" name="nameSubmit" type="submit"
- </form>
+  <h2><%= h2 %></h2>
+  <ol>
+	<% listData.forEach(function(listItem){ %>
+		<li><%= listItem %></li><% }); %>
+  </ol>
 </body>
-</html> 
