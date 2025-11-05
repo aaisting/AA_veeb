@@ -1,19 +1,16 @@
 const express = require("express");
 const fs = require("fs");
 const bodyparser = require("body-parser");
+//const mysql = require("mysql2/promise");
 const dateEt = require("./src/dateTimeET");
+//const dbInfo = require("../../../../vp2025config");
 const textRef = "public/txt/vanasonad.txt";
-//loome rakenduse, mis käivitab express raamistiku
 const app = express();
-//määran lehtede renderdaja (view engine)
 app.set("view engine", "ejs");
-//muudame public kataloogi veebiserverile kättesaadavaks
 app.use(express.static("public"));
-//asun päringut parsima. Parameeter lõpus on false, kui ainyult tekst ja true, kui muud infot ka
 app.use(bodyparser.urlencoded({extended: false}));
 
 app.get("/", (req, res)=>{
-	//res.send("Express.js rakendus läkski käima!");
 	res.render("index");
 });
 
@@ -38,24 +35,42 @@ app.get("/regvisit", (req, res)=>{
 
 app.post("/regvisit", (req, res)=>{
 	console.log(req.body);
-	//avan tekstifaili kirjutamiseks sellisel moel, et kui teda pole, luuakse (parameeter "a")
 	fs.open("public/txt/visitlog.txt", "a", (err, file)=>{
 		if(err){
 			throw(err);
 		}
 		else {
-			//faili senisele sisule lisamine
-			fs.appendFile("public/txt/visitlog.txt", req.body.nameInput + ";", (err)=>{
+			fs.appendFile("public/txt/visitlog.txt", req.body.firstNameInput + " " + req.body.lastNameInput + ", " + dateEt.longDate() + " kell " + dateEt.time() + ";", (err)=>{
 				if(err){
 					throw(err);
 				}
 				else {
 					console.log("Salvestatud!");
-					res.render("regvisit");
+					res.render("visitregistered", {visitor: req.body.firstNameInput + " " + req.body.lastNameInput});
 				}
 			});
 		}
 	});
 });
+
+app.get("/visitlog", (req, res)=>{
+	let listData = [];
+	fs.readFile("public/txt/visitlog.txt", "utf8", (err, data)=>{
+		if(err){
+			res.render("genericlist", {heading: "Registreeritud külastused", listData: ["Ei leidnud ühtegi külastust!"]});
+		}
+		else {
+			let tempListData = data.split(";");
+			for (let i = 0; i < tempListData.length - 1; i ++){
+				listData.push(tempListData[i]);
+			}
+			res.render("genericlist", {h2: "Registreeritud külastused", listData: listData});
+		}
+	});
+});
+
+//Eesti filmi marsruudid
+const eestifilmRouter = require("./routes/EestiFilm_routes");
+app.use("/eestifilm", eestifilmRouter);
 
 app.listen(5320);

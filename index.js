@@ -70,7 +70,11 @@ app.get("/visitlog", (req, res)=>{
 });
 
 //Eesti filmi marsruudid
-const eestifilmRouter = require("./routes/eestifilmRoutes");
-app.use("/eestifilm", eestifilmRouter);
+const eestifilmRouter = require("./routes/EestiFilm_routes");
+app.use("/EestiFilm", eestifilmRouter);
+
+//Galeriipildi üleslaadimise marsruudid
+const galleryphotouploadRouter = require("./routes/galleryphotouploadRoutes");
+app.use("/galleryphotoupload", galleryphotouploadRouter);
 
 app.listen(5320);

@@ -9,7 +9,7 @@ const {
 	filmPosition,
 	filmPositionAdd,
 	filmPositionAddPost
-} = require("../controllers/eestifilmControllers");
+} = require("../controllers/Eesti_film_Controllers");
 
 router.route("/").get(filmHomePage);
 router.route("/filmiinimesed").get(filmPeople);

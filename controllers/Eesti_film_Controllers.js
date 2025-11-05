@@ -1,140 +1,120 @@
-const dateEt = require("./src/dateTimeET");
-const dbInfo = require("../../../../../vp2025config");
+const dateTimeET = require('../src/dateTimeET');
+const mysql = require('mysql2/promise');
+const dbConfAksel = require('../vp2025config');
 const textRef = "public/txt/vanasonad.txt";
-//@desc Home page for Estonian movie section
-//@route GET /eestifilm
-//@access public
 
-const filmHomePage = (req, res)=>{
-	res.render("eestifilm");
+//eesti film
+const filmHomePage = (req, res) => {
+  res.render("eestifilm");
 };
 
-//@desc page for people involved in Estonian movie industry
-//@route GET /eestifilm/filmiinimesed
-//@access public
-
-const filmPeople =  async (req, res)=>{
-	let conn;
-	const sqlReq = "SELECT * FROM person";
-	try {
-		conn = await mysql.createConnection(dbConfAksel);
-		console.log("Andmebaasiühendus loodud");
-		const [rows, fields] = await conn.execute(sqlReq);
-		res.render("filmiinimesed", {personList: rows});
-	}
-	catch(err) {
-		console.log("Viga: " + err);
-		res.render("filmiinimesed", {personList: []});
-	}
-	finally {
-		if(conn){
-			await conn.end();
-			console.log("Andmebaasiühendus suletud!");
-		}
-	}
+//inimesed eesti filmis
+const filmPeople = async (req, res) => {
+  let conn;
+  const sqlReq = "SELECT * FROM person";
+  try {
+    conn = await mysql.createConnection(dbConfAksel);
+    console.log("Andmebaasiühendus loodud");
+    const [rows] = await conn.execute(sqlReq);
+    res.render("filmiinimesed", { personList: rows });
+  } catch (err) {
+    console.log("Viga: " + err);
+    res.render("filmiinimesed", { personList: [] });
+  } finally {
+    if (conn) {
+      await conn.end();
+      console.log("Andmebaasiühendus suletud!");
+    }
+  }
 };
 
-//@desc page for adding people involved in Estonian movie industry
-//@route GET /eestifilm/filmiinimesed_add
-//@access public
-
-const filmPeopleAdd = (req, res)=>{
-	res.render("filmiinimesed_add", {notice: "Ootan sisestust!"});
+//inimeste lisamine eesti filmi
+const filmPeopleAdd = (req, res) => {
+  res.render("filmiinimesed_add", { notice: "Ootan sisestust!" });
 };
 
-//@desc page for submitting people involved in Estonian movie industry
-//@route POST /eestifilm/filmiinimesed_add
-//@access public
 
-const filmPeopleAddPost =  async (req, res)=>{
-	let conn;
-	let sqlReq = "INSERT INTO person (first_name, last_name, born, deceased) VALUES (?,?,?,?)";
-	if(!req.body.firstNameInput || !req.body.lastNameInput || !req.body.bornInput || req.body.bornInput > new Date()){
-		res.render("filmiinimesed_add", {notice: "Andmed on vigased!"});
-		return;
-	}
-	try {
-		conn = await mysql.createConnection(dbConfAksel);
-		console.log("Andmebaasiühendus loodud");
-		let deceasedDate = null;
-		if(req.body.deceasedInput != ""){
-			deceasedDate = req.body.deceasedInput;
-		}
-		const [result] = await conn.execute(sqlReq, [req.body.firstNameInput, req.body.lastNameInput, req.body.bornInput, deceasedDate]);
-		console.log("Salvestati kirje id: " + result.insertId);
-		res.render("filmiinimesed_add", {notice: "Andmed edukalt salvestatud!"});
-	}
-	catch(err){
-		console.log("Viga: " + err);
-		res.render("filmiinimesed_add", {notice: "Tekkis tehniline viga!"});
-	}
-	finally {
-		if(conn){
-			await conn.end();
-			console.log("Andmebaasiühendus suletud!");
-		}
-	}
+const filmPeopleAddPost = async (req, res) => {
+  let conn;
+  const sqlReq = "INSERT INTO person (first_name, last_name, born, deceased) VALUES (?,?,?,?)";
+  if (!req.body.firstNameInput || !req.body.lastNameInput || !req.body.bornInput) {
+    res.render("filmiinimesed_add", { notice: "Andmed on vigased!" });
+    return;
+  }
+  try {
+    conn = await mysql.createConnection(dbConfAksel);
+    console.log("Andmebaasiühendus loodud");
+    let deceasedDate = req.body.deceasedInput || null;
+    const [result] = await conn.execute(sqlReq, [
+      req.body.firstNameInput,
+      req.body.lastNameInput,
+      req.body.bornInput,
+      deceasedDate
+    ]);
+    console.log("Salvestati kirje id: " + result.insertId);
+    res.render("filmiinimesed_add", { notice: "Andmed edukalt salvestatud!" });
+  } catch (err) {
+    console.log("Viga: " + err);
+    res.render("filmiinimesed_add", { notice: "Tekkis tehniline viga!" });
+  } finally {
+    if (conn) {
+      await conn.end();
+      console.log("Andmebaasiühendus suletud!");
+    }
+  }
 };
 
-//@desc page for professions involved in movie industry
-//@route GET /eestifilm/ametid
-//@access public
 
-const filmPosition = (req, res)=>{
-	const sqlReq = "SELECT * FROM position";
-	conn.execute(sqlReq, (err, sqlRes)=>{
-		if(err){
-			console.log(err);
-			res.render("filmiametid", {positionList: []});
-		}
-		else {
-			console.log(sqlRes);
-			res.render("filmiametid", {positionList: sqlRes});
-		}
-		
-	});
+const filmPosition = async (req, res) => {
+  let conn;
+  const sqlReq = "SELECT * FROM position";
+  try {
+    conn = await mysql.createConnection(dbConfAksel);
+    const [rows] = await conn.execute(sqlReq);
+    res.render("filmiametid", { positionList: rows });
+  } catch (err) {
+    console.log("Viga: " + err);
+    res.render("filmiametid", { positionList: [] });
+  } finally {
+    if (conn) {
+      await conn.end();
+    }
+  }
 };
 
-//@desc page for adding professions involved in movie industry
-//@route GET /eestifilm/ametid_add
-//@access public
 
-const filmPositionAdd = (req, res)=>{
-	res.render("filmiametid_add", {notice: "Ootan sisestust!"});
+const filmPositionAdd = (req, res) => {
+  res.render("filmiametid_add", { notice: "Ootan sisestust!" });
 };
 
-//@desc page for submitting professions involved in movie industry
-//@route POST /eestifilm/ametid_add
-//@access public
 
-const filmPositionAddPOST = (req, res)=>{
-	console.log(req.body);
-	if(!req.body.positionNameInput){
-		res.render("filmiametid_add", {notice: "Palun kirjuta ameti nimetus!"});
-	}
-	else {
-		let positionDescription = null;
-		if(req.body.positionDescriptionInput != ""){
-			positionDescription = req.body.positionDescriptionInput;
-		}
-		let sqlReq = "INSERT INTO `position` (position_name, description) VALUES (?,?)";
-		conn.execute(sqlReq, [req.body.positionNameInput, positionDescription], (err, sqlRes)=>{
-			if(err){
-				res.render("filmiametid_add", {notice: "Tekkis tehniline viga:" + err});
-			}
-			else {
-				res.redirect("/eestifilm/ametid");
-			}
-		});
-	}
+const filmPositionAddPost = async (req, res) => {
+  let conn;
+  if (!req.body.positionNameInput) {
+    res.render("filmiametid_add", { notice: "Palun kirjuta ameti nimetus!" });
+    return;
+  }
+  try {
+    conn = await mysql.createConnection(dbConfAksel);
+    const sqlReq = "INSERT INTO position (position_name, description) VALUES (?,?)";
+    const description = req.body.positionDescriptionInput || null;
+    await conn.execute(sqlReq, [req.body.positionNameInput, description]);
+    res.redirect("/eestifilm/ametid");
+  } catch (err) {
+    res.render("filmiametid_add", { notice: "Tekkis tehniline viga: " + err });
+  } finally {
+    if (conn) {
+      await conn.end();
+    }
+  }
 };
 
 module.exports = {
-	filmHomePage,
-	filmPeople,
-	filmPeopleAdd,
-	filmPeopleAddPost,
-	filmPosition,
-	filmPositionAdd,
-	filmPositionAddPOST
+  filmHomePage,
+  filmPeople,
+  filmPeopleAdd,
+  filmPeopleAddPost,
+  filmPosition,
+  filmPositionAdd,
+  filmPositionAddPost
 };
