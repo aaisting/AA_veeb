@@ -1,14 +1,47 @@
 const express = require("express");
 const fs = require("fs");
 const bodyparser = require("body-parser");
-//const mysql = require("mysql2/promise");
+const mysql = require("mysql2/promise");
 const dateEt = require("./src/dateTimeET");
-//const dbInfo = require("../../../../vp2025config");
+const SuvalineMuutuja = require("../../vp2025config");
 const textRef = "public/txt/vanasonad.txt";
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(bodyparser.urlencoded({extended: false}));
+app.use(bodyparser.urlencoded({extended: true}));
+
+const dbConf = {
+	host: SuvalineMuutuja.configData.host,
+	user: SuvalineMuutuja.configData.user,
+	password: SuvalineMuutuja.configData.passWord,
+	database: SuvalineMuutuja.configData.dataBase
+};
+
+app.get("/", async (req, res)=>{
+	let conn;
+	try {
+		conn = await mysql.createConnection(dbConf);
+		let sqlReq = "SELECT filename, alttext FROM gallery_photos WHERE id=(SELECT MAX(id) FROM gallery_photos WHERE privacy=? AND deleted IS NULL)";
+		const privacy = 3;
+		const [rows, fields] = await conn.execute(sqlReq, [privacy]);
+		console.log(rows);
+		let imgAlt = "Avalik foto";
+		if(rows[0].alttext != ""){
+			imgAlt = rows[0].alttext;
+		}
+		res.render("index", {imgFile: "gallery/normal/" + rows[0].filename, imgAlt: imgAlt});
+	}
+	catch(err){
+		res.render("index");
+	}
+	finally {
+		if(conn){
+			await conn.end();
+			console.log("Andmebaasi Uhendus suletud!");
+		}
+	}
+});
+
 
 app.get("/", (req, res)=>{
 	res.render("index");
@@ -76,5 +109,9 @@ app.use("/EestiFilm", eestifilmRouter);
 //Galeriipildi üleslaadimise marsruudid
 const galleryphotouploadRouter = require("./routes/galleryphotouploadRoutes");
 app.use("/galleryphotoupload", galleryphotouploadRouter);
+
+//fotogalerii marsruudid
+const photogalleryRouter = require("./routes/photogalleryroutes");
+app.use("/photogallery", photogalleryRouter);
 
 app.listen(5320);

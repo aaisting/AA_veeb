@@ -1,1 +1,30 @@
-siia film add
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="utf-8">
+  <title>Aksel Aisting, veebiprogrammeerimine</title>
+</head>
+<body>
+  <img src="/home/aaisting/public_html/AA_veeb2/images" alt="Kursuse bänner">
+  <h1>Aksel Aisting, veebiprogrammeerimine</h1>
+  <p>See leht on loodud <a href="https://www.tlu.ee">Tallinna Ülikoolis</a> veebiprogrammeerimise kurusel ja ei oma mõistlikku sisu.</p>
+  <hr>
+  <ul>
+	<li><a href="/">Avalehele</a></li>
+	<li><a href="/eestifilm">Eesti filmi avaleht</a></li>
+  </ul>
+  <h2>Eesti filmide lisamine</h2>
+  <form method="POST">
+    <label for="movieNameInput">Eesnimi</label>
+	<input id="movieNameInput" type="text" name="movieNameInput" placeholder="Kirjuta siia filmi nimi...">
+    <br>
+	<label for="releaseInput">Sünnikuupäev</label>
+	<input id="releaseInput" name="releaseInput" type="date">
+	<br>
+	<input id="movieSubmit" name="movieSubmit" type="submit" value="Salvesta">
+	<textarea id="movieDescriptionInput" name="movieDescriptionInput" cols="100 rows="5" placeholder="filmi lühikirjeldus...">
+
+</textarea>
+  </form>
+</body>
+</html>
