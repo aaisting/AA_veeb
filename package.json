@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/aaisting/AA_veeb#readme",
   "dependencies": {
+    "argon2": "^0.44.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "js": "^0.1.0",

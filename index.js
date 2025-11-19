@@ -21,7 +21,7 @@ app.get("/", async (req, res)=>{
 	let conn;
 	try {
 		conn = await mysql.createConnection(dbConf);
-		let sqlReq = "SELECT filename, alttext FROM gallery_photos WHERE id=(SELECT MAX(id) FROM gallery_photos WHERE privacy=? AND deleted IS NULL)";
+		let sqlReq = "SELECT filename, alttext FROM galleryphotos WHERE id=(SELECT MAX(id) FROM galleryphotos WHERE privacy=? AND deleted IS NULL)";
 		const privacy = 3;
 		const [rows, fields] = await conn.execute(sqlReq, [privacy]);
 		console.log(rows);
@@ -32,20 +32,23 @@ app.get("/", async (req, res)=>{
 		res.render("index", {imgFile: "gallery/normal/" + rows[0].filename, imgAlt: imgAlt});
 	}
 	catch(err){
-		res.render("index");
+		console.log(err);
+		//res.render("index");
+		res.render("index", {imgFile: "images/otsin_pilte.jpg", imgAlt: "Tunnen end, kui pilti otsiv lammas ..."});
 	}
 	finally {
 		if(conn){
 			await conn.end();
-			console.log("Andmebaasi Uhendus suletud!");
+			console.log("AndmebaasiÃ¼hendus suletud!");
 		}
 	}
 });
 
 
-app.get("/", (req, res)=>{
-	res.render("index");
-});
+
+//app.get("/", (req, res)=>{
+//	res.render("index");
+//});
 
 app.get("/timenow", (req, res)=>{
 	res.render("timenow", {wd: dateEt.weekDay(), date: dateEt.longDate()});
@@ -113,5 +116,14 @@ app.use("/galleryphotoupload", galleryphotouploadRouter);
 //fotogalerii marsruudid
 const photogalleryRouter = require("./routes/photogalleryroutes");
 app.use("/photogallery", photogalleryRouter);
+
+//Uudiste lisamine
+const news_addRouter = require("./routes/news_add_routes");
+app.use("/news_add", news_addRouter);
+
+//kasutajakonto loomise marsruuidi
+const signupRouter = require("./routes/signupRoutes");
+app.use("/signup", signupRouter);
+
 
 app.listen(5320);
