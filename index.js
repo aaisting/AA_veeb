@@ -118,7 +118,7 @@ const photogalleryRouter = require("./routes/photogalleryroutes");
 app.use("/photogallery", photogalleryRouter);
 
 //Uudiste lisamine
-const news_addRouter = require("./routes/news_add_routes");
+const news_add_Router = require("./routes/news_add_routes");
 app.use("/uudiste_lisamine", news_add_Router);
 
 //kasutajakonto loomise marsruuidi
