@@ -33,7 +33,7 @@ const photogalleryPage = async (req, res)=>{
 			return res.redirect ("/photogallery/1");
 		}
 		conn= await mysql.createConnection(dbConf);
-		let sqlReq = "SELECT COUNT(id) AS photos FROM galleryphotos_aa WHERE privacy >= ? AND deleted IS NULL";
+		let sqlReq = "SELECT COUNT(id) AS photos FROM gallery_photos WHERE privacy >= ? AND deleted IS NULL";
 		const [countresult] = await conn.execute(sqlReq, [privacy]);
 		const photoCount = countresult[0].photos;
 		//console.log("Fotosid on: " + photoCount);

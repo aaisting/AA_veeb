@@ -21,7 +21,7 @@ app.get("/", async (req, res)=>{
 	let conn;
 	try {
 		conn = await mysql.createConnection(dbConf);
-		let sqlReq = "SELECT filename, alttext FROM galleryphotos WHERE id=(SELECT MAX(id) FROM galleryphotos WHERE privacy=? AND deleted IS NULL)";
+		let sqlReq = "SELECT filename, alttext FROM gallery_photos WHERE id=(SELECT MAX(id) FROM gallery_photos WHERE privacy=? AND deleted IS NULL)";
 		const privacy = 3;
 		const [rows, fields] = await conn.execute(sqlReq, [privacy]);
 		console.log(rows);
@@ -119,7 +119,7 @@ app.use("/photogallery", photogalleryRouter);
 
 //Uudiste lisamine
 const news_addRouter = require("./routes/news_add_routes");
-app.use("/news_add", news_addRouter);
+app.use("/uudiste_lisamine", news_add_Router);
 
 //kasutajakonto loomise marsruuidi
 const signupRouter = require("./routes/signupRoutes");

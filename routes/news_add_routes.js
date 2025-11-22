@@ -2,21 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
-	filmHomePage,
-	filmPeople,
-	filmPeopleAdd,
-	filmPeopleAddPost,
-	filmPosition,
-	filmPositionAdd,
-	filmPositionAddPost
+    news_home_page,
+    news_all
+
 } = require("../controllers/news_add_Controllers");
 
-router.route("/").get(filmHomePage);
-router.route("/filmiinimesed").get(filmPeople);
-router.route("/filmiinimesed_add").get(filmPeopleAdd);
-router.route("/filmiinimesed_add").post(filmPeopleAddPost);
-router.route("/ametid").get(filmPosition);
-router.route("/ametid_add").get(filmPositionAdd);
-router.route("/ametid_add").post(filmPositionAddPost);
+router.route("/news_home_page").get(news_home_page);
+router.route("/news_all").get(news_all);
 
 module.exports = router;
