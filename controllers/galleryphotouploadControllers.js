@@ -12,7 +12,7 @@ const dbConf = {
 
 //@desc Home page for uploading gallery photos
 //@route GET /galleryphotoupload
-//@access public
+//@access private
 
 const galleryphotouploadPage = (req, res)=>{
 	res.render("galleryphotoupload");
@@ -20,7 +20,7 @@ const galleryphotouploadPage = (req, res)=>{
 
 //@desc page for adding gallery photos
 //@route POST /galleryphotoupload
-//@access public
+//@access private
 
 const galleryphotouploadPagePost = async (req, res)=>{
 	let conn;
@@ -54,7 +54,7 @@ const galleryphotouploadPagePost = async (req, res)=>{
 		conn= await mysql.createConnection(dbConf);
 		let sqlReq = "INSERT INTO gallery_photos (filename, originalname, alttext, privacy, userid) VALUES(?,?,?,?,?)";
 		//Kuna kasutajakontosid ja nende id-sid veel pole, siis ...
-		const userId = 1;
+		const userId = req.session.userId;
 		const [result] = await conn.execute(sqlReq, [fileName, req.file.originalname, req.body.altInput, req.body.privacyInput, userId]);
 		console.log("Lisati foto id: " + result.insertId);
 		res.render("galleryphotoupload");

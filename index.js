@@ -3,12 +3,16 @@ const fs = require("fs");
 const bodyparser = require("body-parser");
 const mysql = require("mysql2/promise");
 const dateEt = require("./src/dateTimeET");
+const session = require("express-session");
 const SuvalineMuutuja = require("../../vp2025config");
 const textRef = "public/txt/vanasonad.txt";
+const checkLogin = require("./src/checkLogin");
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({extended: true}));
+
+app.use(session({secret: SuvalineMuutuja.configData.sessionSecret, saveUninitialized: true, resave: true}));
 
 const dbConf = {
 	host: SuvalineMuutuja.configData.host,
@@ -49,6 +53,21 @@ app.get("/", async (req, res)=>{
 //app.get("/", (req, res)=>{
 //	res.render("index");
 //});
+
+//sisseloginud kasutajate avaleht
+app.get("/home", checkLogin.isLogin, (req, res)=>{
+	console.log("Sisse logis kasutaja id: " + req.session.userId);
+	const userName = req.session.userFirstName + " " + req.session.userLastName;
+	res.render("home", {userName: userName});
+});
+
+//väljalogimine
+app.get("/logout", (req,res)=>{
+	//tühistame sessiooni
+	req.session.destroy();
+	res.redirect("/");
+});
+
 
 app.get("/timenow", (req, res)=>{
 	res.render("timenow", {wd: dateEt.weekDay(), date: dateEt.longDate()});
@@ -124,6 +143,10 @@ app.use("/uudiste_lisamine", news_add_Router);
 //kasutajakonto loomise marsruuidi
 const signupRouter = require("./routes/signupRoutes");
 app.use("/signup", signupRouter);
+
+//sisselogimise marsruudid
+const signinRouter = require("./routes/signinRoutes");
+app.use("/signin", signinRouter);
 
 
 app.listen(5320);
